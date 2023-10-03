@@ -1,6 +1,6 @@
 {
   "name": "@masterhealth-technologies/graphql-tag.macro",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "graphql-tag as a babel-macro",
   "author": {
     "name": "Leonardo Andres Garcia Crespo",
