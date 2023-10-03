@@ -211,7 +211,7 @@ const frag2 = {
     \\"start\\": 0,
     \\"end\\": 77,
     \\"source\\": {
-      \\"body\\": \\"\\\\n  fragment FooFrag on Foo {\\\\n    qux\\\\n    chi {\\\\n      ...ChiFrag\\\\n    }\\\\n  }\\\\n  \\\\n\\",
+      \\"body\\": \\"\\\\n  fragment ChiFrag on Chi {\\\\n    var\\\\n    char\\\\n  }\\\\n\\\\n  fragment FooFrag on Foo {\\\\n    qux\\\\n    chi {\\\\n      ...ChiFrag\\\\n    }\\\\n  }\\\\n  \\\\n\\",
       \\"name\\": \\"GraphQL request\\",
       \\"locationOffset\\": {
         \\"line\\": 1,
@@ -275,7 +275,7 @@ const query = {
     \\"start\\": 0,
     \\"end\\": 75,
     \\"source\\": {
-      \\"body\\": \\"\\\\n  query Foo {\\\\n    foo {\\\\n      bar\\\\n      baz\\\\n      ...FooFrag\\\\n    }\\\\n  }\\\\n  \\\\n\\",
+      \\"body\\": \\"\\\\n  fragment ChiFrag on Chi {\\\\n    var\\\\n    char\\\\n  }\\\\n\\\\n  fragment FooFrag on Foo {\\\\n    qux\\\\n    chi {\\\\n      ...ChiFrag\\\\n    }\\\\n  }\\\\n  \\\\n\\\\n  query Foo {\\\\n    foo {\\\\n      bar\\\\n      baz\\\\n      ...FooFrag\\\\n    }\\\\n  }\\\\n  \\\\n\\",
       \\"name\\": \\"GraphQL request\\",
       \\"locationOffset\\": {
         \\"line\\": 1,

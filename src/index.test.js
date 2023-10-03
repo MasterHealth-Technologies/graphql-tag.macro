@@ -1,6 +1,17 @@
-import path from "path";
 import pluginTester from "babel-plugin-tester";
 import plugin from "babel-plugin-macros";
+
+const jestConsole = console;
+
+// uncomment below to see logs in attached node debugger
+
+// beforeEach(() => {
+//   global.console = require("console");
+// });
+
+// afterEach(() => {
+//   global.console = jestConsole;
+// });
 
 pluginTester({
   plugin,

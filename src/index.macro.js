@@ -12,6 +12,8 @@ function graphqlTagMacro({ references, babel }) {
   });
 }
 
+const queryStringCache = {}; // keyed by variable name, values of {query: string}
+
 function compile(babel, path) {
   const t = babel.types;
   const source = path.node.quasi.quasis.map((node) => node.value.raw).join("");
@@ -25,7 +27,9 @@ function compile(babel, path) {
     }
   });
 
-  const compiled = parse(gql(source));
+  const gqlDocument = gql(source);
+  const compiled = parse(gqlDocument);
+  const fragmentNames = [];
 
   if (expressions.length) {
     const definitionsProperty = compiled.properties.find(
@@ -33,9 +37,10 @@ function compile(babel, path) {
     );
     const definitionsArray = definitionsProperty.value;
 
-    const extraDefinitions = expressions.map((expr) =>
-      t.memberExpression(expr.node, t.identifier("definitions"))
-    );
+    const extraDefinitions = expressions.map((expr) => {
+      fragmentNames.push(expr.node.name);
+      return t.memberExpression(expr.node, t.identifier("definitions"));
+    });
 
     definitionsProperty.value = t.callExpression(
       t.memberExpression(definitionsArray, t.identifier("concat")),
@@ -43,5 +48,31 @@ function compile(babel, path) {
     );
   }
 
+  if (fragmentNames.length) {
+    let query = source;
+    if (fragmentNames.length) {
+      query = fragmentNames.reduce(
+        (baseQuery, key) => `${queryStringCache[key].query}${baseQuery}`,
+        query
+      );
+    }
+    queryStringCache[path.parent.id.name] = {
+      query,
+    };
+
+    // replace existing source with consolidated one
+    const locProperty = compiled.properties.find((p) => p.key.value === "loc");
+    const srcProperty = locProperty.value.properties.find(
+      (p) => p.key.value === "source"
+    );
+    const bodyProperty = srcProperty.value.properties.find(
+      (p) => p.key.value === "body"
+    );
+    bodyProperty.value = t.stringLiteral(query);
+  } else {
+    queryStringCache[path.parent.id.name] = {
+      query: gqlDocument.loc.source.body,
+    };
+  }
   path.replaceWith(compiled);
 }
